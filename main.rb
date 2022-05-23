@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 require 'csv'
+require 'Time'
 
 # {used to }
 module Utils
@@ -15,12 +16,55 @@ module Utils
       i += 1
     end
   end
+
+  def calc_score(data, question_number, answer, current_score)
+    current_score += 1 if data[question_number][1] == answer
+    current_score
+  end
+
+  def display_welcome
+    puts ">>>>>Welcome to Blitz Quiz<<<<<<<<<<"
+    puts ""
+    puts "Do you want to Start Quiz (Y/N) ? "
+    puts ""
+  end
+
+  def timer
+    Time.now.to_i
+  end
+
+  def start_quiz
+
+    data =  Utils.read_file_csv("problems.csv")
+    question_number = 0
+    score = 0
+    time_remaining = Utils.timer + 59
+    data.length times do
+      break if time_remaining != 0
+      puts "Question # #{question_number } : #{data[question_number][0]}"
+      answer = gets
+      #{}score = calc_score (data, question_number, answer, score)
+      question_number += 1
+      time_remaining = time_remaining - time_now
+    end
+    puts "Time Up!!!!!!!!!!!"
+    puts "Total Questions : #{data.length}"
+    puts "Total Correct   : #{score}"
+  end
 end
 
-class QuizInit
+
+class Quiz
   include Utils
+  def quiz_init
+    Utils.start_quiz
+  end
 end
 
-quiz = QuizInit.new
-data = quiz.read_file_csv('problems.csv')
-quiz.print_data_csv(data, data.length)
+quiz = Quiz.new
+quiz.quiz_init
+# quiz.print_data_csv(data, data.length)
+
+# puts quiz.calc_score(data, 1, '2', 0)
+
+
