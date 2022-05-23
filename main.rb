@@ -2,12 +2,13 @@
 
 require 'csv'
 
+# {used to }
 module Utils
-  def readFileCSV(fileName)
-    CSV.parse(File.read(fileName), headers: true)
+  def read_file_csv(file_name)
+    CSV.parse(File.read(file_name), headers: true)
   end
 
-  def printDataCSV(data, length)
+  def print_data_csv(data, length)
     i = 0
     length.times do
       puts "#{data[i][0]},#{data[i][1]}"
@@ -21,5 +22,5 @@ class QuizInit
 end
 
 quiz = QuizInit.new
-data = quiz.readFileCSV('problems.csv')
-quiz.printDataCSV(data, data.length)
+data = quiz.read_file_csv('problems.csv')
+quiz.print_data_csv(data, data.length)
