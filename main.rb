@@ -2,8 +2,7 @@
 
 require 'csv'
 require 'Time'
-
-# {used to }
+# {funcs}
 module Utils
   def read_file_csv(file_name)
     CSV.parse(File.read(file_name), headers: true)
@@ -17,54 +16,49 @@ module Utils
     end
   end
 
-  def calc_score(data, question_number, answer, current_score)
-    current_score += 1 if data[question_number][1] == answer
-    current_score
+  def calc_score(data, question_number, answer, score)
+    if data[question_number][1] == answer
+      score[0] += 1
+    else
+      score[1] += 1
+    end
+    score
   end
 
   def display_welcome
-    puts ">>>>>Welcome to Blitz Quiz<<<<<<<<<<"
-    puts ""
-    puts "Do you want to Start Quiz (Y/N) ? "
-    puts ""
+    puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n>>>>>Welcome to Blitz Quiz<<<<<<<<<<"
+    puts ''
+    puts 'Do you want to Start Quiz (y/n) ? '
   end
 
   def timer
     Time.now.to_i
   end
-
-  def start_quiz
-
-    data =  Utils.read_file_csv("problems.csv")
-    question_number = 0
-    score = 0
-    time_remaining = Utils.timer + 59
-    data.length times do
-      break if time_remaining != 0
-      puts "Question # #{question_number } : #{data[question_number][0]}"
-      answer = gets
-      #{}score = calc_score (data, question_number, answer, score)
-      question_number += 1
-      time_remaining = time_remaining - time_now
-    end
-    puts "Time Up!!!!!!!!!!!"
-    puts "Total Questions : #{data.length}"
-    puts "Total Correct   : #{score}"
-  end
 end
-
 
 class Quiz
   include Utils
-  def quiz_init
-    Utils.start_quiz
-  end
 end
 
 quiz = Quiz.new
-quiz.quiz_init
-# quiz.print_data_csv(data, data.length)
+quiz.display_welcome
+if gets.chomp == 'y'
+  data = quiz.read_file_csv('problems.csv')
+  time_remaining = quiz.timer + 30
+  question_number = 0
+  score = [0, 0]
+  data.length.times do
+    break if time_remaining < quiz.timer
 
-# puts quiz.calc_score(data, 1, '2', 0)
+    puts "Question#{question_number + 1}: #{data[question_number][0]} ?"
+    answer = gets.chomp
+    score = quiz.calc_score data, question_number, answer, score
+    question_number += 1
+  end
+  puts "\n\nTime Up!!!!!!!!!!!\n\n\n"
+  puts "Total Questions : #{data.length}\n\n"
+  puts "Total Left : #{data.length - (score[1] + score[0])}\n\n"
+  puts "Total Correct   : #{score[0]}\n\n"
+  puts "Total Wrong   : #{score[1]}\n\n"
 
-
+end
