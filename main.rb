@@ -27,13 +27,30 @@ module Utils
 
   def display_welcome
     puts "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n>>>>>Welcome to Blitz Quiz<<<<<<<<<<"
-    puts ''
-    puts 'Do you want to Start Quiz (y/n) ? '
+    puts "Quiz Time is 30 Seconds !!!"
+    puts "Do you want to Start Quiz (y/n) ?"
   end
 
-  def timer
+  def timer_now
     Time.now.to_i
   end
+
+  def display_result (data,score)
+    puts "\n\nTime Up!!!!!!!!!!!\n\n\n"
+    puts "Total Questions : #{data.length}\n\n"
+    puts "Total Left : #{data.length - (score[1] + score[0])}\n\n"
+    puts "Total Correct   : #{score[0]}\n\n"
+    puts "Total Wrong   : #{score[1]}\n\n"
+  end
+  def ask_question (data, question_number)
+    puts "Question#{question_number + 1}: #{data[question_number][0]} ?"
+  end
+  def take_answer
+    gets.chomp
+  end
+
+
+
 end
 
 class Quiz
@@ -44,21 +61,16 @@ quiz = Quiz.new
 quiz.display_welcome
 if gets.chomp == 'y'
   data = quiz.read_file_csv('problems.csv')
-  time_remaining = quiz.timer + 30
   question_number = 0
   score = [0, 0]
+  time_remaining = quiz.timer_now + 30
   data.length.times do
-    break if time_remaining < quiz.timer
-
-    puts "Question#{question_number + 1}: #{data[question_number][0]} ?"
-    answer = gets.chomp
+    break if time_remaining < quiz.timer_now
+    quiz.ask_question data, question_number
+    answer = quiz.take_answer
     score = quiz.calc_score data, question_number, answer, score
     question_number += 1
   end
-  puts "\n\nTime Up!!!!!!!!!!!\n\n\n"
-  puts "Total Questions : #{data.length}\n\n"
-  puts "Total Left : #{data.length - (score[1] + score[0])}\n\n"
-  puts "Total Correct   : #{score[0]}\n\n"
-  puts "Total Wrong   : #{score[1]}\n\n"
+  quiz.display_result data, score
 
 end
